@@ -68,6 +68,45 @@ const server = http.createServer((req, res) => {
     /* ========================== ROUTE HANDLERS ========================== */
 
     // Your code here
+    if(req.method === "GET" && req.url === "/artists"){
+      let output = [];
+      for(let obj in artists){
+        output.push(artists[obj]);
+      }
+      const resBody = JSON.stringify(output);
+      res.statusCode = 200;
+      res.setHeader("content-type", "application/json");
+      return res.end(resBody);
+    }
+    // artists/:artistID
+    if(req.method === "GET" && req.url.startsWith('/artists/')){
+      const urlParts = req.url.split('/'); "['/', 'artists', '1']"
+      const artistID = urlParts[2]; 
+      if(urlParts.length === 3){
+        let selected_artist = artists[artistID]; 
+
+        res.statusCode = 200;
+        res.setHeader("content-type", "application/json");
+        return res.end(JSON.stringify(selected_artist));
+      }
+    }
+    // /artists
+    if(req.method === "POST" && req.url === "/artists"){
+      let artistId = getNewArtistId();
+      const {name} = req.body;
+      let artist = {name, artistId};
+      artists[artistId] = artist; 
+
+      const resBody = JSON.stringify(artist);
+      res.statusCode = 200;
+      res.setHeader("content-type", "application/json");
+      return res.end(resBody);
+    }
+
+    //edit specificed artists by artist ID, 
+    if((req.method === "PUT" || req.method === "PATCH") && req.url.startsWith('/artists/')){
+      
+    }
 
     res.statusCode = 404;
     res.setHeader('Content-Type', 'application/json');
